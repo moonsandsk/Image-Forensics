@@ -127,4 +127,6 @@ While highly effective, the current implementation has specific constraints:
 
 ## 📜 Acknowledgments
 
-Developed by: [Aditi Chandra](https://github.com/aditi-moonsandsk) & [Abheeshta V Aradhya](https://github.com/abheeshta-username)
+Developed by: [Aditi Chandra](https://github.com/moonsandsk) & [Abheeshta V Aradhya](https://github.com/Abheeshta06)
+
+
