@@ -1,6 +1,5 @@
-# Digital Image Forensics Dashboard: A MATLAB-Based Forgery Detection System
 
-![Forensic Dashboard Result](Outputs/bird_output.jpg)
+# Digital Image Forensics Dashboard: A MATLAB-Based Forgery Detection System
 
 ## 📌 Overview
 The **Digital Image Forensics Dashboard** is an advanced MATLAB-based system designed to authenticate digital images and detect malicious tampering. In an era of Deepfakes and AI-generated content, the ability to blindly detect image manipulations—such as splicing, copy-move forgery, and retouching—is critical for digital security, journalism, and legal forensics.
@@ -81,7 +80,7 @@ Ensure you have **MATLAB** (R2021a or newer) installed with the following toolbo
 
 3.  **Run the Analysis:**
     * Open `run.m` in MATLAB.
-    * Edit the filename variable to match your target image:
+    * Edit the `imageName` variable to match your target image:
         ```matlab
         imageName = 'my_suspect_image.jpg'; 
         ```
@@ -91,7 +90,9 @@ Ensure you have **MATLAB** (R2021a or newer) installed with the following toolbo
 
 ## 📊 Interpreting the Results
 
-The tool generates a comprehensive report saved automatically to the `Outputs/` folder.
+The tool generates a comprehensive report saved automatically to the `Outputs/` folder. Below is an example of the generated dashboard:
+
+![Forensic Dashboard Result](Outputs/bird_output.jpg)
 
 | Forensic Map | Interpretation Guide |
 | :--- | :--- |
@@ -104,21 +105,13 @@ The tool generates a comprehensive report saved automatically to the `Outputs/` 
 
 ---
 
-## 📂 Project Structure
-
-The repository is organized for modularity and ease of use:
-Image-Forensics/ ├── Data/ # Folder for input images (test cases) ├── Outputs/ # Folder where generated report images are saved ├── ImageTamperingDetector.m # CORE CLASS: Encapsulates all 5 algorithms & fusion logic ├── run.m # DRIVER SCRIPT: Configures and executes the analysis ├── README.md # Project documentation └── .gitignore # Configuration to ignore temporary files
-
----
-
 ## 🧪 Validation & Datasets
 
 This tool has been rigorously tested and validated on:
-1.  **CASIA 2.0 Image Tampering Detection Dataset:** A benchmark dataset containing thousands of realistic spliced and copy-moved images.
+1.  **[CASIA 2.0 Image Tampering Detection Dataset](https://www.kaggle.com/datasets/divg07/casia-20-image-tampering-detection-dataset):** A benchmark dataset containing thousands of realistic spliced and copy-moved images.
 2.  **Custom Synthetic Dataset:** Created manually using Adobe Photoshop and GIMP to simulate challenging scenarios, such as:
     * Inserting objects into complex textured backgrounds.
     * Cloning elements to hide distinct features.
-    .
 
 ---
 
@@ -134,6 +127,4 @@ While highly effective, the current implementation has specific constraints:
 
 ## 📜 Acknowledgments
 
-**Developed by:** Aditi Chandra & Abheeshta V Aradhya
-
-
+Developed by: [Aditi Chandra](https://github.com/aditi-moonsandsk) & [Abheeshta V Aradhya](https://github.com/abheeshta-username)
