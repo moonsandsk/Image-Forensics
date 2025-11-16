@@ -1,38 +1,139 @@
-# Digital Image Forensics Dashboard
+# Digital Image Forensics Dashboard: A MATLAB-Based Forgery Detection System
 
-## Project Description:
-### Summary -
-This project is a Digital Image Tampering Detector built in MATLAB for the Digital Image Processing (DIP) course. It addresses the need for robust image authentication by implementing a multi-method forensic dashboard. The system analyzes a suspect image using five distinct passive forensic techniques (ELA, JPEG Artifacts, Noise Analysis, Edge Analysis, and Copy-Move) and generates a unified visual report. The final output is a **Fused Suspicion Map** that highlights the most probable regions of manipulation.
+![Forensic Dashboard Result](Outputs/bird_output.jpg)
 
-### Course concepts used -
-1.  **Image Fundamentals:** Handling image data types (uint8, double), color space conversion (RGB to YCbCr/Grayscale), and reading/writing image files.
-2.  **Filtering & Frequency Domain:** Implementation of Wiener filtering (`wiener2`) for noise extraction and Block-based processing which relies on Discrete Cosine Transform (DCT) principles.
-3.  **Morphological Operations:** Using morphological closing and opening to clean up binary detection maps and connect fragmented components.
+## 📌 Overview
+The **Digital Image Forensics Dashboard** is an advanced MATLAB-based system designed to authenticate digital images and detect malicious tampering. In an era of Deepfakes and AI-generated content, the ability to blindly detect image manipulations—such as splicing, copy-move forgery, and retouching—is critical for digital security, journalism, and legal forensics.
 
-### Additional concepts used -
-1.  **Unsupervised Machine Learning (K-Means Clustering):** Used to automatically segment the noise residual map into "authentic" and "tampered" clusters without prior training data.
-2.  **Statistical Analysis:** Calculation of Z-scores and Correlation Matrices for the block-based Copy-Move forgery detection algorithm.
+This project implements a **"Defense-in-Depth"** strategy, moving beyond single-algorithm detection to a robust **Evidence Fusion Framework**. By running five distinct passive forensic algorithms in parallel and synthesizing their results, this tool minimizes false positives and provides a high-confidence verdict on image integrity.
 
-### Dataset -
-1.  **CASIA 2.0 Image Tampering Detection Dataset:** A standard benchmark dataset for splicing and copy-move forgery. Available at: [Kaggle - CASIA 2.0](https://www.kaggle.com/datasets/divg07/casia-20-image-tampering-detection-dataset).
-2.  **Custom Dataset:** Created by manually splicing objects (e.g., inserting a centipede into a image of a sand, adding a cat to a backround image) using photo editing tools like Photoshop, GIMP, or edit with Microsoft paint saved as high-quality JPEGs to simulate realistic forgeries.
+---
 
-### Novelty -
-1.  **Evidence Fusion Algorithm:** Unlike single-method detectors, this project implements a weighted summation of five different forensic maps to reduce false positives and create a highly confident "Combined Suspicion Map."
-2.  **Modular OOP Architecture:** The entire system is encapsulated in a MATLAB `classdef`, making the code modular, scalable, and easy to integrate into larger forensic pipelines compared to standard procedural scripts.
+## 🚀 Key Features
+
+* **Multi-Modal Analysis:** Simultaneously analyzes compression artifacts, sensor noise fingerprints, edge gradients, and pixel block correlations.
+* **Evidence Fusion Engine:** A novel weighted voting algorithm combines normalized outputs from all five detectors to generate a single **"Combined Suspicion Map"**.
+* **Automated Reporting:** Generates a unified $3 \times 4$ forensic dashboard visualizing every stage of analysis.
+* **Object-Oriented Architecture:** Built on a modular `ImageTamperingDetector` class, ensuring scalability and ease of integration.
+* **Blind Detection:** Requires **no prior knowledge** of the source camera or the original image to function effectively.
+
+---
+
+## 🔬 Technical Methodology & Algorithms
+
+The core of the system lies in its ability to detect the "invisible scars" left by image manipulation. The following five forensic techniques are implemented:
+
+### 1. Error Level Analysis (ELA)
+* **Forensic Principle:** JPEG compression is lossy. When an image is resaved, valid pixels degrade at a known rate. Spliced regions, originating from a different source with a unique compression history, will degrade at a different rate (or "glow") when subjected to recompression.
+* **Implementation Details:**
+    1.  The image is resaved at 95% quality.
+    2.  The absolute pixel difference is computed: $ELA = |Original - Resaved|$.
+    3.  **Gamma Correction** and **Adaptive Histogram Equalization (CLAHE)** are applied to the difference map to visualize subtle error residuals invisible to the naked eye.
+
+### 2. Noise Inconsistency Detection (PRNU Analysis)
+* **Forensic Principle:** Every camera sensor imparts a unique, high-frequency noise pattern known as Photo-Response Non-Uniformity (PRNU). When an object is pasted from a different image, it carries a foreign noise fingerprint.
+* **Implementation Details:**
+    1.  A **Wiener Filter** is applied to estimate the "true" underlying image signal.
+    2.  The "Noise Residual" is extracted by subtracting the filtered image from the original.
+    3.  **K-Means Clustering ($k=2$ or $k=3$)** is deployed to segment the noise map, automatically isolating regions with statistically anomalous noise variance.
+
+### 3. JPEG Block Artifact Analysis
+* **Forensic Principle:** The JPEG standard processes images in non-overlapping $8 \times 8$ pixel blocks. Manipulation operations like resizing, rotation, or splicing disrupt this rigid grid alignment.
+* **Implementation Details:**
+    1.  The image is converted to the YCbCr color space to isolate the Luminance (Y) channel.
+    2.  **Block Processing (`blockproc`)** is used to compute the local Standard Deviation (`std2`) for every $8 \times 8$ block.
+    3.  Discontinuities in block statistics reveal "ghost grids" or disjointed regions indicative of tampering.
+
+### 4. Edge Inconsistency Analysis
+* **Forensic Principle:** Artificial composites often exhibit edges that are unnatural compared to the global scene—either too sharp (due to hard cropping) or too blurry (due to feathering/smoothing).
+* **Implementation Details:**
+    1.  Edges are detected using a robust combination of **Canny**, **Sobel**, and **Prewitt** operators.
+    2.  The gradient magnitude is computed for every edge pixel using `imgradientxy`.
+    3.  Edges with magnitudes deviating more than **$2\sigma$** (standard deviations) from the median edge strength are flagged as suspicious outliers.
+
+### 5. Copy-Move Forgery Detection
+* **Forensic Principle:** A common forgery technique involves "cloning" a region of an image to hide an object or duplicate a crowd. This results in two identical regions within the same image.
+* **Implementation Details:**
+    1.  The image is divided into overlapping $16 \times 16$ blocks.
+    2.  **Discrete Cosine Transform (DCT)** coefficients are extracted for each block to create robust feature vectors.
+    3.  A **Correlation Matrix** is computed to find pairs of blocks with a correlation coefficient $>0.95$.
+    4.  To filter out false positives (like flat sky areas), only pairs separated by a minimum Euclidean distance are flagged.
+
+---
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+Ensure you have **MATLAB** (R2021a or newer) installed with the following toolboxes:
+* **Image Processing Toolbox™** (Required for `edge`, `blockproc`, `wiener2`)
+* **Statistics and Machine Learning Toolbox™** (Required for `kmeans`)
+
+### Installation Steps
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/moonsandsk/Image-Forensics.git](https://github.com/moonsandsk/Image-Forensics.git)
+    cd Image-Forensics
+    ```
+
+2.  **Prepare Your Data:**
+    * Place your suspect images (JPG, PNG, TIFF) into the `Data/` folder.
+    * *(Optional)*: Use the provided sample images like `lion[1].jpg` or `bird_output.jpg`.
+
+3.  **Run the Analysis:**
+    * Open `run.m` in MATLAB.
+    * Edit the filename variable to match your target image:
+        ```matlab
+        imageName = 'my_suspect_image.jpg'; 
+        ```
+    * Click **Run** or press **F5**.
+
+---
+
+## 📊 Interpreting the Results
+
+The tool generates a comprehensive report saved automatically to the `Outputs/` folder.
+
+| Forensic Map | Interpretation Guide |
+| :--- | :--- |
+| **ELA Enhanced** | **Bright, glowing regions** indicate a compression anomaly. A genuine image should appear uniformly dark. |
+| **Noise Map** | **Solid, coherent shapes** in the noise field are suspicious. Genuine sensor noise should look like random "salt-and-pepper" static. |
+| **JPEG Artifacts** | **Blocky islands** that do not match the texture of the rest of the image suggest a grid misalignment caused by splicing. |
+| **Suspicious Edges** | This map *only* displays edges that are statistically abnormal. If it clearly **outlines an object**, that object was likely pasted. |
+| **Copy-Move Map** | **White patches** indicate confirmed cloned regions. This is a definitive sign of tampering. |
+| **Tampering Overlay** | **The Final Verdict.** A red semi-transparent mask overlays the high-confidence tampered regions, synthesized from all 5 tests. |
+
+---
+
+## 📂 Project Structure
+
+The repository is organized for modularity and ease of use:
+Image-Forensics/ ├── Data/ # Folder for input images (test cases) ├── Outputs/ # Folder where generated report images are saved ├── ImageTamperingDetector.m # CORE CLASS: Encapsulates all 5 algorithms & fusion logic ├── run.m # DRIVER SCRIPT: Configures and executes the analysis ├── README.md # Project documentation └── .gitignore # Configuration to ignore temporary files
+
+---
+
+## 🧪 Validation & Datasets
+
+This tool has been rigorously tested and validated on:
+1.  **CASIA 2.0 Image Tampering Detection Dataset:** A benchmark dataset containing thousands of realistic spliced and copy-moved images.
+2.  **Custom Synthetic Dataset:** Created manually using Adobe Photoshop and GIMP to simulate challenging scenarios, such as:
+    * Inserting objects into complex textured backgrounds.
+    * Cloning elements to hide distinct features.
+    .
+
+---
+
+## ⚠️ Limitations & Future Roadmap
+
+While highly effective, the current implementation has specific constraints:
+* **Computational Cost:** The block-based Copy-Move algorithm has a time complexity of $O(n^2)$, making it slower for 4K+ resolution images.
+    * *Future Work:* Implement **SIFT/SURF keypoint matching** to reduce complexity to $O(n \log n)$.
+* **Uncompressed Sources:** ELA and Artifact detection rely heavily on JPEG compression traces. Their efficacy is reduced on pristine RAW or TIFF images.
+    * *Future Work:* Integration of a **Convolutional Neural Network (CNN)** trained on noise residuals to detect manipulation in uncompressed media.
+
+---
+
+## 📜 Acknowledgments
+
+**Developed by:** Aditi Chandra & Abheeshta V Aradhya
 
 
-## Outputs:
-* **Forensic Dashboard:** The system generates a 3x4 grid of subplots showing intermediate results (ELA, Noise Map, Edge Map) and the final decision.
-* **Final Output Image:** A fused "Tampering Overlay" where red pixels indicate high probability of forgery.
-
-![Example Output Dashboard](Outputs/bird_output.jpg)
-*(Note: This image serves as a visual proof of the tool's functionality on the custom dataset)*
-
-## References:
-1.  Farid, H. (2009). "Image forgery detection." *IEEE Signal Processing Magazine*, 26(2), 16-25.
-2.  Fridrich, J., Soukal, D., & Lukáš, J. (2003). "Detection of Copy-Move Forgery in Digital Images." *Proceedings of DFRWS*.
-
-## Limitations and Future Work:
-* **Computation Speed:** The Copy-Move detection algorithm is computationally expensive (O(n^2)) due to block matching. Future work could implement keypoint-based methods (SIFT/SURF) for faster performance.
-* **Robustness:** The current ELA and Artifact methods rely on JPEG compression traces. Future improvements could include deep learning models (CNNs) to detect manipulation in uncompressed (TIFF/PNG) images.](https://github.com/moonsandsk/Image-Forensics.git)
