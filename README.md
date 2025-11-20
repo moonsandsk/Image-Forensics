@@ -1,14 +1,14 @@
 
-# Digital Image Forensics Dashboard: A MATLAB-Based Forgery Detection System
+# Digital Image Forensics : A MATLAB-Based Forgery Detection System
 
-## 📌 Overview
+##  Overview
 The **Digital Image Forensics Dashboard** is an advanced MATLAB-based system designed to authenticate digital images and detect malicious tampering. In an era of Deepfakes and AI-generated content, the ability to blindly detect image manipulations—such as splicing, copy-move forgery, and retouching—is critical for digital security, journalism, and legal forensics.
 
 This project implements a **"Defense-in-Depth"** strategy, moving beyond single-algorithm detection to a robust **Evidence Fusion Framework**. By running five distinct passive forensic algorithms in parallel and synthesizing their results, this tool minimizes false positives and provides a high-confidence verdict on image integrity.
 
 ---
 
-## 🚀 Key Features
+##  Key Features
 
 * **Multi-Modal Analysis:** Simultaneously analyzes compression artifacts, sensor noise fingerprints, edge gradients, and pixel block correlations.
 * **Evidence Fusion Engine:** A novel weighted voting algorithm combines normalized outputs from all five detectors to generate a single **"Combined Suspicion Map"**.
@@ -18,7 +18,7 @@ This project implements a **"Defense-in-Depth"** strategy, moving beyond single-
 
 ---
 
-## 🔬 Technical Methodology & Algorithms
+##  Technical Methodology & Algorithms
 
 The core of the system lies in its ability to detect the "invisible scars" left by image manipulation. The following five forensic techniques are implemented:
 
@@ -60,7 +60,7 @@ The core of the system lies in its ability to detect the "invisible scars" left 
 
 ---
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 Ensure you have **MATLAB** (R2021a or newer) installed with the following toolboxes:
@@ -88,7 +88,7 @@ Ensure you have **MATLAB** (R2021a or newer) installed with the following toolbo
 
 ---
 
-## 📊 Interpreting the Results
+##  Interpreting the Results
 
 The tool generates a comprehensive report saved automatically to the `Outputs/` folder. Below is an example of the generated dashboard:
 
@@ -105,7 +105,7 @@ The tool generates a comprehensive report saved automatically to the `Outputs/` 
 
 ---
 
-## 🧪 Validation & Datasets
+##  Validation & Datasets
 
 This tool has been rigorously tested and validated on:
 1.  **[CASIA 2.0 Image Tampering Detection Dataset](https://www.kaggle.com/datasets/divg07/casia-20-image-tampering-detection-dataset):** A benchmark dataset containing thousands of realistic spliced and copy-moved images.
@@ -115,7 +115,7 @@ This tool has been rigorously tested and validated on:
 
 ---
 
-## ⚠️ Limitations & Future Roadmap
+##  Limitations & Future Roadmap
 
 While highly effective, the current implementation has specific constraints:
 * **Computational Cost:** The block-based Copy-Move algorithm has a time complexity of $O(n^2)$, making it slower for 4K+ resolution images.
@@ -125,7 +125,7 @@ While highly effective, the current implementation has specific constraints:
 
 ---
 
-## 📜 Acknowledgments
+##  Acknowledgments
 
 Developed by: [Aditi Chandra](https://github.com/moonsandsk) & [Abheeshta V Aradhya](https://github.com/Abheeshta06)
 
